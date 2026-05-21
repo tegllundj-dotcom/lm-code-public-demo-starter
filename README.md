@@ -1,6 +1,6 @@
 # LM Code Public Demo Starter
 
-This folder is a clean starter kit for a future public repository such as `tegllundj-dotcom/lm-code-demo`.
+This repository is the safe public demo and download surface for LM Code.
 
 It is safe-by-default and includes a small runnable demo app. It must not be treated as the commercial LM Code source tree.
 
@@ -72,18 +72,22 @@ The demo is static and self-contained. It uses mock data only and does not call 
 
 The Windows installer is published through GitHub Releases in this public repository. The private LM Code source repository remains private.
 
-## Recommended first public release
+Public release assets should stay limited to compiled distribution files and verification material such as:
+
+- Windows installer `.exe`
+- `SHA256SUMS.txt`
+
+## Public release pattern
 
 ```text
-LM Code Public Demo v1.0.0-preview
+LM Code Windows Installer v<version>
 ```
 
-Mark it as a pre-release and attach only safe demo assets:
+Attach only safe public distribution assets:
 
 ```text
-LM-Code-Demo-v1.0.0-preview-win-x64.zip
+LM-Code-<version>-windows-x64-setup.exe
 SHA256SUMS.txt
-sample-project.zip
 ```
 
 ## Non-goal
