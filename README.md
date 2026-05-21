@@ -6,6 +6,8 @@ It is safe-by-default and includes a small runnable demo app. It must not be tre
 
 Live demo: https://tegllundj-dotcom.github.io/lm-code-public-demo-starter/
 
+Windows installer: https://github.com/tegllundj-dotcom/lm-code-public-demo-starter/releases/latest
+
 ## Positioning
 
 LM Code is a local-first AI coding workbench for Windows and LM Studio. It helps developers review, reason about, and prepare code changes while keeping the workflow visible, reviewable, and non-destructive.
@@ -65,6 +67,10 @@ demo-app/index.html
 ```
 
 The demo is static and self-contained. It uses mock data only and does not call LM Studio, scan files, write files, apply patches, or collect telemetry.
+
+## Public installer
+
+The Windows installer is published through GitHub Releases in this public repository. The private LM Code source repository remains private.
 
 ## Recommended first public release
 
