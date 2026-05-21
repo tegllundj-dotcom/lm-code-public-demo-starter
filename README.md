@@ -4,6 +4,8 @@ This folder is a clean starter kit for a future public repository such as `tegll
 
 It is safe-by-default and includes a small runnable demo app. It must not be treated as the commercial LM Code source tree.
 
+Live demo: https://tegllundj-dotcom.github.io/lm-code-public-demo-starter/
+
 ## Positioning
 
 LM Code is a local-first AI coding workbench for Windows and LM Studio. It helps developers review, reason about, and prepare code changes while keeping the workflow visible, reviewable, and non-destructive.
