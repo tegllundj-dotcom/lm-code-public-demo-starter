@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LM Code Public Demo</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #090907;
+        --panel: #14130f;
+        --panel-soft: #1c1a14;
+        --line: rgba(245, 239, 220, 0.14);
+        --text: #f5efdc;
+        --muted: #b9b09a;
+        --dim: #817967;
+        --teal: #3ed5bd;
+        --amber: #e8b85b;
+        --red: #ef7d6d;
+        --green: #91d974;
+        --code: #070706;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          linear-gradient(rgba(245, 239, 220, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(245, 239, 220, 0.024) 1px, transparent 1px),
+          radial-gradient(circle at 18% 12%, rgba(62, 213, 189, 0.12), transparent 30rem),
+          radial-gradient(circle at 82% 8%, rgba(232, 184, 91, 0.11), transparent 26rem),
+          var(--bg);
+        background-size: 34px 34px, 34px 34px, auto, auto, auto;
+        color: var(--text);
+        font-family: "Aptos", "Segoe UI", "Helvetica Neue", sans-serif;
+      }
+
+      button,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .shell {
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        min-height: 100vh;
+        gap: 12px;
+        padding: 16px;
+      }
+
+      .topbar,
+      .promptbar,
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(17, 17, 14, 0.9);
+        box-shadow: 0 18px 70px rgba(0, 0, 0, 0.32);
+        backdrop-filter: blur(16px);
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 12px 14px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        gap: 12px;
+      }
+
+      .mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border: 1px solid rgba(62, 213, 189, 0.36);
+        border-radius: 8px;
+        background: linear-gradient(145deg, rgba(62, 213, 189, 0.22), rgba(232, 184, 91, 0.1));
+        color: var(--teal);
+        font-weight: 800;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 16px;
+        line-height: 22px;
+        letter-spacing: 0;
+      }
+
+      h2 {
+        margin-top: 3px;
+        font-size: 15px;
+        line-height: 21px;
+        letter-spacing: 0;
+      }
+
+      h3 {
+        font-size: 14px;
+        line-height: 20px;
+      }
+
+      .subtitle {
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 18px;
+      }
+
+      .badges,
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 5px 9px;
+        color: var(--muted);
+        background: rgba(245, 239, 220, 0.045);
+        font-size: 12px;
+        line-height: 16px;
+        white-space: nowrap;
+      }
+
+      .badge.strong {
+        border-color: rgba(62, 213, 189, 0.32);
+        color: #ccfff5;
+        background: rgba(62, 213, 189, 0.1);
+      }
+
+      .badge.warn {
+        border-color: rgba(232, 184, 91, 0.36);
+        color: #ffe6ad;
+        background: rgba(232, 184, 91, 0.1);
+      }
+
+      .main {
+        display: grid;
+        grid-template-columns: 280px minmax(0, 1fr) 320px;
+        min-height: 0;
+        gap: 12px;
+        overflow: hidden;
+      }
+
+      .panel {
+        display: flex;
+        min-height: 0;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .panel-header {
+        border-bottom: 1px solid var(--line);
+        padding: 13px 14px;
+      }
+
+      .eyebrow {
+        color: var(--dim);
+        font-size: 11px;
+        line-height: 15px;
+        text-transform: uppercase;
+      }
+
+      .scroll {
+        min-height: 0;
+        flex: 1;
+        overflow: auto;
+        padding: 12px;
+      }
+
+      .mode-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .mode-button {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 11px;
+        background: rgba(245, 239, 220, 0.035);
+        color: var(--text);
+        text-align: left;
+      }
+
+      .mode-button:hover,
+      .mode-button.active {
+        border-color: rgba(62, 213, 189, 0.45);
+        background: rgba(62, 213, 189, 0.08);
+      }
+
+      .mode-button span {
+        display: block;
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 18px;
+      }
+
+      .workbench {
+        display: grid;
+        min-height: 0;
+        gap: 12px;
+      }
+
+      .turn {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(5, 5, 4, 0.56);
+        overflow: hidden;
+      }
+
+      .turn-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid var(--line);
+        padding: 12px;
+      }
+
+      .turn-body {
+        display: grid;
+        gap: 10px;
+        padding: 12px;
+      }
+
+      pre,
+      code,
+      .diff-row {
+        font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      }
+
+      pre {
+        margin: 0;
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--code);
+        padding: 12px;
+        color: #e9e2cb;
+        font-size: 12px;
+        line-height: 20px;
+      }
+
+      .response {
+        min-height: 112px;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(245, 239, 220, 0.035);
+        padding: 12px;
+        color: #eee6cf;
+        font-size: 13px;
+        line-height: 21px;
+      }
+
+      .diff {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--code);
+        overflow: hidden;
+      }
+
+      .diff-row {
+        display: grid;
+        grid-template-columns: 36px minmax(0, 1fr);
+        gap: 10px;
+        padding: 6px 10px;
+        border-top: 1px solid rgba(245, 239, 220, 0.06);
+        font-size: 12px;
+        line-height: 18px;
+      }
+
+      .diff-row:first-child {
+        border-top: 0;
+      }
+
+      .diff-row.add {
+        background: rgba(145, 217, 116, 0.09);
+        color: #c8f8b9;
+      }
+
+      .diff-row.remove {
+        background: rgba(239, 125, 109, 0.1);
+        color: #ffc5bd;
+      }
+
+      .diff-row.meta {
+        color: var(--amber);
+        background: rgba(232, 184, 91, 0.08);
+      }
+
+      .context-card {
+        display: grid;
+        gap: 10px;
+      }
+
+      .file-card,
+      .status-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(245, 239, 220, 0.035);
+        padding: 11px;
+      }
+
+      .file-card strong,
+      .status-card strong {
+        display: block;
+        font-size: 13px;
+        line-height: 19px;
+      }
+
+      .file-card span,
+      .status-card span {
+        display: block;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 18px;
+        overflow-wrap: anywhere;
+      }
+
+      .promptbar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: end;
+        gap: 12px;
+        padding: 12px;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 52px;
+        max-height: 120px;
+        resize: vertical;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(5, 5, 4, 0.72);
+        color: var(--text);
+        padding: 10px 12px;
+        line-height: 20px;
+        outline: none;
+      }
+
+      textarea:focus {
+        border-color: rgba(62, 213, 189, 0.48);
+      }
+
+      .button {
+        min-height: 42px;
+        border: 1px solid rgba(62, 213, 189, 0.4);
+        border-radius: 8px;
+        background: linear-gradient(180deg, rgba(62, 213, 189, 0.28), rgba(62, 213, 189, 0.13));
+        color: #dffff8;
+        padding: 10px 14px;
+        font-weight: 700;
+      }
+
+      .button.secondary {
+        border-color: var(--line);
+        background: rgba(245, 239, 220, 0.045);
+        color: var(--text);
+      }
+
+      .button:disabled {
+        cursor: not-allowed;
+        opacity: 0.58;
+      }
+
+      .cursor {
+        display: inline-block;
+        width: 8px;
+        animation: blink 0.9s infinite;
+        color: var(--teal);
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      @media (max-width: 1100px) {
+        .main {
+          grid-template-columns: 240px minmax(0, 1fr);
+        }
+
+        .context-panel {
+          display: none;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .shell {
+          min-height: 100dvh;
+          padding: 10px;
+        }
+
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .main {
+          grid-template-columns: 1fr;
+          overflow: auto;
+        }
+
+        .panel {
+          min-height: 320px;
+        }
+
+        .promptbar {
+          grid-template-columns: 1fr;
+        }
+
+        .actions {
+          justify-content: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="mark">LM</div>
+          <div>
+            <h1>LM Code Public Demo</h1>
+            <p class="subtitle">Read-only sample workspace for local AI coding workflows.</p>
+          </div>
+        </div>
+        <div class="badges" aria-label="Demo status">
+          <span class="badge strong">Public Demo Mode</span>
+          <span class="badge">Mock LM Studio</span>
+          <span class="badge warn">No file writes</span>
+        </div>
+      </header>
+
+      <main class="main">
+        <aside class="panel">
+          <div class="panel-header">
+            <p class="eyebrow">Task modes</p>
+            <h2>Choose a workflow</h2>
+          </div>
+          <div class="scroll">
+            <div class="mode-list" id="modeList"></div>
+          </div>
+        </aside>
+
+        <section class="panel">
+          <div class="panel-header">
+            <p class="eyebrow">Workbench</p>
+            <h2 id="workbenchTitle">Fix Bug</h2>
+          </div>
+          <div class="scroll">
+            <div class="workbench">
+              <article class="turn">
+                <div class="turn-head">
+                  <div>
+                    <p class="eyebrow">Sample prompt</p>
+                    <h3 id="promptTitle">Session refresh bug</h3>
+                  </div>
+                  <span class="badge strong" id="streamBadge">Ready</span>
+                </div>
+                <div class="turn-body">
+                  <pre id="sampleCode"></pre>
+                  <div class="response" id="assistantResponse"></div>
+                  <div class="diff" id="diffPreview" aria-label="Read-only patch preview"></div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <aside class="panel context-panel">
+          <div class="panel-header">
+            <p class="eyebrow">Context</p>
+            <h2>Sample project only</h2>
+          </div>
+          <div class="scroll">
+            <div class="context-card">
+              <div class="status-card">
+                <strong>Runtime boundary</strong>
+                <span>DEMO_MODE=true, FILE_WRITES=false, PATCH_APPLY=false, TELEMETRY=false.</span>
+              </div>
+              <div class="file-card">
+                <strong>sample-project/session.ts</strong>
+                <span>Bundled sample code. No local files are read.</span>
+              </div>
+              <div class="file-card">
+                <strong>sample-project/session.test.ts</strong>
+                <span>Mock test target for task-mode previews.</span>
+              </div>
+              <div class="status-card">
+                <strong>Patch policy</strong>
+                <span>Preview only. There is no Apply button and no filesystem mutation path.</span>
+              </div>
+              <div class="status-card">
+                <strong>Network policy</strong>
+                <span>LM Studio behavior is mocked in this public demo source.</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </main>
+
+      <footer class="promptbar">
+        <textarea id="promptInput" aria-label="Demo prompt"></textarea>
+        <div class="actions">
+          <button class="button secondary" id="resetButton" type="button">Reset</button>
+          <button class="button" id="demoSendButton" type="button">Demo Send</button>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      const modes = [
+        {
+          id: "fix",
+          label: "Fix Bug",
+          description: "Find the cause and show a minimal correction.",
+          prompt: "Why does the sample session refresh keep returning an expired session key?",
+          response:
+            "The likely issue is that the refresh path returns the previous expiry value after creating the new session key. The minimal fix is to return the refreshed expiry from the new session object and keep the old session key untouched until the replacement is ready.",
+        },
+        {
+          id: "explain",
+          label: "Explain Code",
+          description: "Describe purpose, structure, and risk.",
+          prompt: "Explain what this session helper is doing.",
+          response:
+            "This helper validates the current session, refreshes it when the expiry window is close, and returns a compact status object for the UI. The main risk is mixing old and new expiry data during refresh.",
+        },
+        {
+          id: "refactor",
+          label: "Refactor Code",
+          description: "Improve clarity without changing behavior.",
+          prompt: "Refactor this sample helper for readability.",
+          response:
+            "A clean refactor is to separate the expiry calculation from the refresh branch, then return one consistent session result shape. That keeps the UI code from knowing which path was taken.",
+        },
+        {
+          id: "patch",
+          label: "Generate Patch",
+          description: "Show a proposed diff without applying it.",
+          prompt: "Generate a proposed patch for the refresh bug.",
+          response:
+            "Here is a proposed patch. It is preview-only in this public demo and has not been applied to any file.",
+        },
+        {
+          id: "tests",
+          label: "Write Tests",
+          description: "Suggest edge cases for the sample code.",
+          prompt: "Write tests for this session refresh behavior.",
+          response:
+            "The most useful tests cover an expired session key, a session inside the refresh window, and a session that is still valid. The refresh-window test should assert that the returned expiry is the refreshed value.",
+        },
+        {
+          id: "error",
+          label: "Analyze Error",
+          description: "Explain the likely cause and next checks.",
+          prompt: "Analyze: expected fresh expiry, received stale expiry.",
+          response:
+            "The assertion points to stale state crossing the refresh boundary. Check the return object after refresh and confirm it uses the new session expiry rather than the pre-refresh input.",
+        },
+      ];
+
+      const sampleCode = `type Session = {
+  sessionKey: string;
+  expiresAt: number;
+};
+
+export function refreshSession(session: Session, now: number) {
+  const shouldRefresh = session.expiresAt - now < 60_000;
+
+  if (!shouldRefresh) {
+    return { status: "valid", session };
+  }
+
+  const refreshed = {
+    sessionKey: "demo-session-key",
+    expiresAt: now + 3_600_000,
+  };
+
+  return {
+    status: "refreshed",
+    session: refreshed,
+    expiresAt: session.expiresAt,
+  };
+}`;
+
+      const diffRows = [
+        ["meta", "@@ refreshSession return value @@"],
+        ["remove", "-    expiresAt: session.expiresAt,"],
+        ["add", "+    expiresAt: refreshed.expiresAt,"],
+      ];
+
+      const state = {
+        activeMode: modes[0],
+        streaming: false,
+      };
+
+      const modeList = document.querySelector("#modeList");
+      const workbenchTitle = document.querySelector("#workbenchTitle");
+      const promptTitle = document.querySelector("#promptTitle");
+      const sampleCodeElement = document.querySelector("#sampleCode");
+      const assistantResponse = document.querySelector("#assistantResponse");
+      const diffPreview = document.querySelector("#diffPreview");
+      const streamBadge = document.querySelector("#streamBadge");
+      const promptInput = document.querySelector("#promptInput");
+      const demoSendButton = document.querySelector("#demoSendButton");
+      const resetButton = document.querySelector("#resetButton");
+
+      function renderModes() {
+        modeList.innerHTML = "";
+
+        for (const mode of modes) {
+          const button = document.createElement("button");
+          button.className = `mode-button ${mode.id === state.activeMode.id ? "active" : ""}`;
+          button.type = "button";
+          button.innerHTML = `<strong>${mode.label}</strong><span>${mode.description}</span>`;
+          button.addEventListener("click", () => {
+            state.activeMode = mode;
+            render();
+          });
+          modeList.appendChild(button);
+        }
+      }
+
+      function renderDiff() {
+        diffPreview.innerHTML = "";
+
+        for (const [kind, text] of diffRows) {
+          const row = document.createElement("div");
+          row.className = `diff-row ${kind}`;
+          row.innerHTML = `<span>${kind === "add" ? "ADD" : kind === "remove" ? "DEL" : "HUNK"}</span><span>${text}</span>`;
+          diffPreview.appendChild(row);
+        }
+      }
+
+      function render() {
+        renderModes();
+        workbenchTitle.textContent = state.activeMode.label;
+        promptTitle.textContent = state.activeMode.prompt;
+        sampleCodeElement.textContent = sampleCode;
+        promptInput.value = state.activeMode.prompt;
+        streamBadge.textContent = state.streaming ? "Streaming" : "Ready";
+        renderDiff();
+
+        if (!state.streaming) {
+          assistantResponse.textContent = state.activeMode.response;
+        }
+      }
+
+      function streamDemoResponse() {
+        if (state.streaming) {
+          return;
+        }
+
+        state.streaming = true;
+        assistantResponse.textContent = "";
+        renderModes();
+        streamBadge.textContent = "Streaming";
+        demoSendButton.disabled = true;
+
+        const text = `${state.activeMode.response}\n\nPublic Demo Mode: read-only, sample data, no file writes, no patch apply.`;
+        let index = 0;
+
+        const timer = window.setInterval(() => {
+          assistantResponse.textContent += text[index] || "";
+          index += 1;
+
+          if (index >= text.length) {
+            window.clearInterval(timer);
+            state.streaming = false;
+            streamBadge.textContent = "Complete";
+            demoSendButton.disabled = false;
+            assistantResponse.insertAdjacentHTML("beforeend", '<span class="cursor"> </span>');
+          }
+        }, 14);
+      }
+
+      demoSendButton.addEventListener("click", streamDemoResponse);
+      resetButton.addEventListener("click", () => {
+        state.activeMode = modes[0];
+        state.streaming = false;
+        demoSendButton.disabled = false;
+        render();
+      });
+
+      render();
+    </script>
+  </body>
+</html>
