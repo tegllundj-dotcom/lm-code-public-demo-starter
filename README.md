@@ -1,62 +1,86 @@
-# LM Code Public Demo Starter
+# LM Code Public Demo
 
-This repository is the safe public demo and download surface for LM Code.
+[![Status](https://img.shields.io/badge/status-public%20demo-46dcd2)](#)
+[![Mode](https://img.shields.io/badge/mode-mock--only-12343A)](#)
+[![Safety](https://img.shields.io/badge/file%20writes-disabled-ddac5c)](#)
+[![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)](#)
 
-It is safe-by-default and includes a small runnable demo app. It must not be treated as the commercial LM Code source tree.
+LM Code is a local-first AI coding workbench for Windows and LM Studio.
 
-Live demo: https://tegllundj-dotcom.github.io/lm-code-public-demo-starter/
+It is built for developers and teams who want AI assistance without surrendering control of their codebase.
 
-Windows installer: https://github.com/tegllundj-dotcom/lm-code-public-demo-starter/releases/latest
+This repository is the public demo and download surface for LM Code. It is not the commercial product source tree.
 
-## Positioning
+## Try it
 
-LM Code is a local-first AI coding workbench for Windows and LM Studio. It helps developers review, reason about, and prepare code changes while keeping the workflow visible, reviewable, and non-destructive.
+- Live demo: https://tegllundj-dotcom.github.io/lm-code-public-demo-starter/
+- Windows installer: https://github.com/tegllundj-dotcom/lm-code-public-demo-starter/releases/latest
 
-## Public demo goal
+## Why this exists
 
-The public demo should show the LM Code workflow without exposing private product code, private repository history, secrets, customer code, or unsafe file operations.
+AI coding assistants are useful, but many developers and organizations still need control over source code exposure, project context, file mutation and review workflows.
 
-The demo may show:
-
-- premium desktop UI direction
-- LM Studio connection concept
-- mock model discovery
-- mock streaming chat
-- task modes
-- sample project context
-- read-only patch preview
-- Monaco-style editor preview
-- history and undo concepts
-
-The demo must not include:
-
-- real project scanning
-- file writes
-- patch apply
-- secrets, tokens, or private URLs
-- private repository history
-- customer or personal code
-- telemetry by default
-- cloud model calls by default
-
-## Recommended public repository contents
+LM Code explores a controlled local workflow:
 
 ```text
-README.md
-SECURITY.md
-PRIVACY.md
-DEMO_MODE.md
-RELEASE_CHECKLIST.md
-SAMPLE_RELEASE_NOTES.md
-LICENSE.md
-demo-app/
-  index.html
-assets/
-  screenshots/
-  demo-video-link.md
-sample-project/
-  README.md
+Developer -> task mode -> visible context -> local/model response -> read-only patch preview -> human review
 ```
+
+The public demo exists as a trust layer. It shows the workflow direction without exposing private product source code or enabling destructive behavior.
+
+## Safety boundaries
+
+The public demo is intentionally constrained:
+
+- no file writes
+- no real project scanning
+- no patch apply
+- no telemetry by default
+- mock/sample data only
+- no private product source code
+- no private repository history
+- no customer or personal code
+
+## What the demo shows
+
+- desktop-oriented LM Code UI direction
+- task modes for common coding workflows
+- mock LM Studio model behavior
+- mock streaming assistant responses
+- bundled sample project context
+- read-only patch preview concept
+- safety/status boundaries in the UI
+
+## What this is not
+
+This public repository is not the full commercial LM Code application.
+
+The private product core, licensing system, updater, future team controls, future safe apply engine, private deployment tooling and paid expansion features remain separate unless explicitly released later.
+
+## Best-fit feedback
+
+Feedback is especially useful from:
+
+- Windows-heavy developers
+- .NET / WPF / internal tools teams
+- LM Studio users
+- local LLM users
+- software agencies
+- internal IT teams
+- public-sector or privacy-conscious technical teams
+- teams working with sensitive or client-owned code
+
+## Feedback links
+
+Use GitHub Issues for structured feedback:
+
+- installer experience
+- public demo clarity
+- workflow usefulness
+- safety/privacy expectations
+- Windows and LM Studio workflow needs
+
+For open-ended discussion, use the starter text in `docs/DISCUSSION_STARTER.md`.
 
 ## Run the local public demo
 
@@ -66,33 +90,18 @@ Open this file directly in a browser:
 demo-app/index.html
 ```
 
-The demo is static and self-contained. It uses mock data only and does not call LM Studio, scan files, write files, apply patches, or collect telemetry.
-
-## Public installer
-
-The Windows installer is published through GitHub Releases in this public repository. The private LM Code source repository remains private.
-
-Public release assets should stay limited to compiled distribution files and verification material such as:
-
-- Windows installer `.exe`
-- `SHA256SUMS.txt`
+The demo is static and self-contained. It uses mock data only and does not call LM Studio, scan files, write files, apply patches or collect telemetry.
 
 ## Public release pattern
 
-```text
-LM Code Windows Installer v<version>
-```
-
-Attach only safe public distribution assets:
+Public release assets should stay limited to compiled distribution files and verification material such as:
 
 ```text
 LM-Code-<version>-windows-x64-setup.exe
 SHA256SUMS.txt
 ```
 
-## Non-goal
-
-This starter kit is not the product source code. The commercial LM Code workbench, licensing system, updater, team/admin features, safe patch apply engine, and private deployment tooling should remain private unless explicitly separated and reviewed later.
+Do not publish private source code, signing keys, private repository history, customer code, local paths, environment files or secrets.
 
 ## Core rule
 
